@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:hdrum/core/constants/constants.dart';
 
 import '../../core/components/buttons/raw_button.dart';
+import '../../core/services/playable_cervice.dart';
+import '../../models/piece_drum_model.dart';
 
 const animationDelay = 50;
 
@@ -43,19 +47,32 @@ class PieceDrum extends StatelessWidget {
   final String name;
   final double size;
 
-  const PieceDrum({
-    Key? key,
-    required this.name,
-    required this.size,
-  }) : super(key: key);
+  final PieceDrumModel? pieceDrumModel;
+
+  const PieceDrum(
+      {Key? key, required this.name, required this.size, this.pieceDrumModel})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final controller =
         Get.put(PieceDrumController(initialSize: size), tag: name);
+    final serviceController = Get.find<PlayableService>();
 
+    serviceController.loadSound(pieceDrumModel!.soundName);
+
+    // Will print error messages to the console.
+    final String assetName = '$kDrumSet/${pieceDrumModel!.soundName}.svg';
+    final svg = SvgPicture.asset(
+      assetName,
+      fit: BoxFit.cover,
+      height: size,
+      width: size,
+    );
     return PlayableRawButton(
       onPressed: () {
+        pieceDrumModel?.emitSound();
+        //serviceController.playSound(pieceDrumModel!.soundName);
         controller.initAnimation();
       },
       child: Obx(
@@ -63,7 +80,7 @@ class PieceDrum extends StatelessWidget {
           double animationSize = controller.size.value;
           return Container(
             decoration: const BoxDecoration(
-              color: Colors.red,
+              //color: Colors.red,
               shape: BoxShape.circle,
             ),
             height: size,
@@ -80,10 +97,11 @@ class PieceDrum extends StatelessWidget {
                   width: animationSize,
                   alignment: Alignment.center,
                   decoration: const BoxDecoration(
-                    color: Colors.blue,
+                    //color: Colors.blue,
                     shape: BoxShape.circle,
                   ),
-                  child: Text(name),
+                  //child: Text(name),
+                  child: svg,
                 ),
               ],
             ),

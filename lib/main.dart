@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hdrum/core/services/playable_cervice.dart';
 
 import 'screen/home_screen.dart';
 
@@ -27,5 +28,6 @@ class MyApp extends StatelessWidget {
 
   void _initDependencies() {
     // Get.put(LeftSideBarController(), permanent: true);
+    Get.put(PlayableService(), permanent: true);
   }
 }
